@@ -4,6 +4,7 @@ import com.bksoftwarevn.itstudent.model.Category;
 import com.bksoftwarevn.itstudent.model.JsonResult;
 import com.bksoftwarevn.itstudent.service.CategoryService;
 import com.bksoftwarevn.itstudent.service_impl.CategoryServiceImpl;
+import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +23,26 @@ public class CategoryController extends HttpServlet {
 
     //thực hiện đối với các chức năng thêm category
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().write("Post");
+        String rs = "";
+        try {
+            //Client sẽ gửi một chuỗi có định dạng json lên cho server
+            //chuỗi json phải có định dạng tương ứng với một đối tượng category
+            //sử dụng gson để chuyển chuỗi json sang đối tượng category
+            //thực hiện lấy trường name bằng getName truyền vào cho hàm insert
+
+            //sử dụng fromJson để chuyển dữ liệu client truyền lên cho server thành
+            //một đối tượng tượng tham sô của hàm nãy tương ứng là:
+            //tham số đầu thì là một bộ đêm để đọc chuỗi hoặc là một chuỗi
+            //Tham số thứ hai là class muốn chuyển từ json về
+            Category category = new Gson().fromJson(request.getReader(),Category.class);
+            Category newCategory = categoryService.insert(category.getName());
+            rs = newCategory != null ? jsonResult.jsonSuccess(newCategory) :
+                    jsonResult.jsonSuccess("Không thể thêm danh mục!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            rs = jsonResult.jsonFail("upload category fail!");
+        }
+        response.getWriter().write(rs);
     }
 
     //thực hiện với các chức năng tìm kiếm category
@@ -47,7 +67,7 @@ public class CategoryController extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             try {
                 Category category = categoryService.findById(id);
-                rs = jsonResult.jsonSuccess(category == null ? "null" : category);
+                rs = jsonResult.jsonSuccess(category == null ? "Không tìm thấy danh mục tương ứng" : category);
             } catch (Exception e) {
                 e.printStackTrace();
                 rs = jsonResult.jsonFail("find by id error");
@@ -62,12 +82,28 @@ public class CategoryController extends HttpServlet {
     //thực hiện với các chức năng sửa category
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().write("Put");
+        String rs = "";
+        try {
+            Category category = new Gson().fromJson(req.getReader(), Category.class);
+            rs = jsonResult.jsonSuccess(categoryService.update(category));
+        } catch (Exception e) {
+            e.printStackTrace();
+            rs = jsonResult.jsonFail("update category fail!");
+        }
+        resp.getWriter().write(rs);
     }
 
     //thực hiện với các chức năng xóa category
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().write("Delete");
+        String rs = "";
+        try {
+            int id = Integer.parseInt(req.getParameter("id"));
+            rs = jsonResult.jsonSuccess(categoryService.delete(id));
+        } catch (Exception e) {
+            e.printStackTrace();
+            rs = jsonResult.jsonFail("delete category fail");
+        }
+        resp.getWriter().write(rs);
     }
 }
