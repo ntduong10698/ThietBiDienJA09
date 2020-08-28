@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<script src="resources/js/pages/ajax_page_quan_ly_san_pham.js"></script>
 <main>
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -22,7 +23,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Tên</label>
-                                <input type="text" class="form-control" id="input-ten" placeholder="Enter email">
+                                <input type="text" class="form-control" id="text-ten" placeholder="Nhập tên">
                                 <div class="invalid-feedback">
                                     Error!
                                 </div>
@@ -31,17 +32,16 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Loại sản phẩm</label>
-                                <select id="select-add-loai-san-pham" class="form-control select-loai-san-pham">
-                                    <option selected>Loại sản phẩm</option>
-                                    <option>Điện thoại</option>
-                                    <option>Cáp sạc</option>
+                                <select id="select-danh-muc" class="form-control select-loai-san-pham">
+                                    <option value="1">Điện thoại</option>
+                                    <option value="2">Cáp sạc</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Giá</label>
-                                <input type="number" class="form-control" id="input-gia"placeholder="Enter email">
+                                <input type="number" class="form-control" id="number-gia"placeholder="Nhập giá" min="0">
                                 <div class="invalid-feedback">
                                     Error!
                                 </div>
@@ -50,7 +50,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Đã bán</label>
-                                <input type="number" class="form-control" id="input-da-ban"placeholder="Enter email">
+                                <input type="number" class="form-control" id="number-da-ban"placeholder="Nhập số lượng" min="0">
                                 <div class="invalid-feedback">
                                     Error!
                                 </div>
@@ -59,7 +59,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Bảo hành</label>
-                                <input type="number" class="form-control" id="input-bao-hanh"placeholder="Enter email">
+                                <input type="number" class="form-control" id="number-bao-hanh"placeholder="Nhập thời lượng" min="0">
                                 <div class="invalid-feedback">
                                     Error!
                                 </div>
@@ -68,7 +68,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Khuyến mãi</label>
-                                <input type="number" class="form-control" id="input-khuyen-mai"placeholder="Enter email">
+                                <input type="number" class="form-control" id="number-khuyen-mai"placeholder="Nhập khuyến mãi" min="0">
                                 <div class="invalid-feedback">
                                     Error!
                                 </div>
@@ -86,8 +86,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Ngày tạo</label>
-                                <input type="date" class="form-control" id="input-ngay-tao"
-                                       aria-describedby="emailHelp" placeholder="Enter email">
+                                <input type="date" class="form-control" id="date-ngay-tao"
+                                       aria-describedby="emailHelp" placeholder="Enter email" disabled>
                                 <div class="invalid-feedback">
                                     Error!
                                 </div>
@@ -96,7 +96,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Giới thiệu</label>
-                                <textarea class="form-control is-invalid" id="textarea-gioi-thieu"
+                                <textarea class="form-control" id="textarea-gioi-thieu"
                                           rows="3"></textarea>
                                 <div class="invalid-feedback">
                                     Error!
@@ -106,7 +106,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Thông số</label>
-                                <textarea class="form-control is-valid" id="textarea-thong-so"
+                                <textarea class="form-control" id="textarea-thong-so"
                                           rows="3"></textarea>
                                 <div class="invalid-feedback">
                                     Error!
@@ -125,7 +125,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-success" id="btn-save">Lưu</button>
+                    <button type="button" class="btn btn-success" id="btn-luu-lai">Lưu</button>
                 </div>
             </div>
         </div>
@@ -150,7 +150,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-danger">Xóa</button>
+                    <button type="button" class="btn btn-danger" id="btn-xac-nhan-xoa">Xóa</button>
                 </div>
             </div>
         </div>
@@ -171,18 +171,17 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-8">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-plus"></i> Thêm sản phẩm</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" id="btn-them"><i class="fas fa-plus"></i> Thêm sản phẩm</button>
                 </div>
                 <div class="col-md-2 mt-1">
-                    <select class="form-control" id="">
+                    <select class="form-control" id="select-search-danh-muc">
                         <option>Loại sản phẩm</option>
-                        <option>Iphone</option>
-                        <option>Bút</option>
-                        <option>Dây điện</option>
+                        <option value="2">Bút</option>
+                        <option value="3">Dây điện</option>
                     </select>
                 </div>
                 <div class="col-md-2 mt-1">
-                    <select class="form-control" id="">
+                    <select class="form-control" id="select-search-sap-xep">
                         <option>Sắp xếp</option>
                         <option>A->Z</option>
                         <option>Z->A</option>
@@ -211,25 +210,25 @@
                             <tr>
                                 <th scope="row"></th>
                                 <td></td>
-                                <td><input type="text" class="form-control" id="input-search-ten"></td>
-                                <td><input type="number" class="form-control" id="input-search-gia"></td>
-                                <td><input type="number" class="form-control" id="input-search-da-ban"></td>
+                                <td><input type="text" class="form-control" id="text-search-ten"></td>
+                                <td><input type="number" class="form-control" id="number-search-gia" min="0"></td>
+                                <td><input type="number" class="form-control" id="number-search-da-ban" min="0"></td>
                                 <td>
-                                    <input type="date" class="form-control" id="input-search-ngay-tao">
+                                    <input type="date" class="form-control" id="date-search-ngay-tao">
                                 </td>
                                 <td>
-                                    <select id="select-search-het-hang" class="form-control">
+                                    <select id="select-search-het-hang" class="form-control" id="select-search-con-hang">
                                         <option selected>Tất cả</option>
-                                        <option>Còn hàng</option>
-                                        <option>Hết hàng</option>
+                                        <option value="false">Còn hàng</option>
+                                        <option value="true">Hết hàng</option>
                                     </select>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-primary"><i class="fas fa-search"></i> Tìm kiếm</button>
+                                    <button type="button" class="btn btn-primary" id="btn-tim-kiem"><i class="fas fa-search"></i> Tìm kiếm</button>
                                 </td>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="table-data">
                             <tr>
                                 <th scope="row">1</th>
                                 <td><img src="https://cdn.cellphones.com.vn/media/catalog/product/cache/7/thumbnail/300x/9df78eab33525d08d6e5fb8d27136e95/i/p/iphone11-purple-select-2019.png"
@@ -240,7 +239,7 @@
                                 <td>Otto</td>
                                 <td class="text-center"><span class="badge badge-success">Còn hàng</span></td>
                                 <td>
-                                    <button type="button" class="btn btn-warning"><i class="fas fa-pen"></i>
+                                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-pen"></i>
                                         Sửa</button>
                                     <button type="button" class="btn btn-danger" data-toggle="modal"
                                             data-target="#exampleModal1"><i class="fas fa-trash-alt"></i>
@@ -257,7 +256,7 @@
                                 <td>Thornton</td>
                                 <td class="text-center"><span class="badge badge-danger">Hết hàng</span></td>
                                 <td>
-                                    <button type="button" class="btn btn-warning"><i class="fas fa-pen"></i>
+                                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-pen"></i>
                                         Sửa</button>
                                     <button type="button" class="btn btn-danger" data-toggle="modal"
                                             data-target="#exampleModal1"><i class="fas fa-trash-alt"></i>
